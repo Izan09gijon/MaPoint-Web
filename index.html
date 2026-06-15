@@ -947,19 +947,20 @@ async function send() {
   typing(true);
 
   try {
-    const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyTYviSf3o_BjzHN1NipxGT3rFllQuf1xVQw';
-
-    const partes = hist.map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
-    }));
-
-    const r = await fetch(GEMINI_URL, {
+    const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer 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',
+        'HTTP-Referer': 'https://izan09gijon.github.io',
+        'X-Title': 'MaPoint Asistente'
+      },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYS }] },
-        contents: partes
+        model: 'meta-llama/llama-3.1-8b-instruct:free',
+        messages: [
+          { role: 'system', content: SYS },
+          ...hist
+        ]
       })
     });
 
@@ -967,7 +968,7 @@ async function send() {
     typing(false);
 
     if (data.error) throw new Error(data.error.message);
-    const res = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No obtuve respuesta, inténtalo de nuevo.';
+    const res = data?.choices?.[0]?.message?.content || 'No obtuve respuesta, inténtalo de nuevo.';
     hist.push({ role: 'assistant', content: res });
     burbuja('assistant', res);
 
