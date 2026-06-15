@@ -947,11 +947,8 @@ async function send() {
   typing(true);
 
   try {
-    // Gemini API — gratuita en https://aistudio.google.com/apikey
-    const GEMINI_KEY = 'AQ.Ab8RN6IUlFp9AUsYTYviSf3o_BjzHN1NipxGT3rFIlQuf1xVQw';
-    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+    const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyTYviSf3o_BjzHN1NipxGT3rFllQuf1xVQw';
 
-    // Convertir el historial al formato que entiende Gemini
     const partes = hist.map(m => ({
       role: m.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: m.content }]
@@ -970,14 +967,13 @@ async function send() {
     typing(false);
 
     if (data.error) throw new Error(data.error.message);
-    // Gemini devuelve la respuesta en candidates[0].content.parts[0].text
     const res = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No obtuve respuesta, inténtalo de nuevo.';
     hist.push({ role: 'assistant', content: res });
     burbuja('assistant', res);
 
   } catch (e) {
     typing(false);
-    burbuja('assistant', 'No pude conectar con el asistente ahora mismo. Consulta las pesta\u00f1as de la gu\u00eda de montaje mientras tanto.');
+    burbuja('assistant', 'No pude conectar con el asistente ahora mismo. Consulta las pestañas de la guía de montaje mientras tanto.');
   }
 
   inp.disabled = false;
